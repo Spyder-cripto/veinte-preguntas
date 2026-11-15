@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veinte preguntas</title>
+<meta name="description" content="Adivina qué es con veinte preguntas de sí o no.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e8590c'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E%3F%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<main id="app">
+
+  <section id="portada" class="pantalla">
+    <h1 class="titulo" id="tituloGrande">VEINTE PREGUNTAS</h1>
+    <p class="lema">Adivina qué es con 20 preguntas de <b class="c-si">sí</b> o <b class="c-no">no</b></p>
+    <button class="boton suave" id="btnReglas">Cómo se juega</button>
+    <div id="rejilla" class="rejilla"></div>
+    <p class="pie">Dibujos propios hechos con datos libres (Natural Earth).</p>
+  </section>
+
+  <section id="juego" class="pantalla oculta">
+    <div class="barraSup">
+      <button class="boton suave peq" id="btnVolver">← Enigmas</button>
+      <span id="numEnigma" class="numEnigma"></span>
+    </div>
+    <h2 id="tituloEnigma" class="tituloEnigma"></h2>
+    <div class="figura" id="figura"><div id="dibujo" class="dibujo"></div></div>
+    <div class="herramientas">
+      <button class="boton suave peq" id="btnGirar">↻ Girar imagen</button>
+    </div>
+    <div class="contador">
+      <span id="txtContador"></span>
+      <span id="bolitas" class="bolitas"></span>
+    </div>
+
+    <div id="zonaFinal" class="zonaFinal oculta"></div>
+
+    <div id="zonaJuego">
+      <div class="acciones">
+        <button class="boton naranja" id="btnSe">¡Ya lo sé!</button>
+        <button class="boton suave" id="btnRindo">Me rindo</button>
+      </div>
+      <form id="formRespuesta" class="formRespuesta oculta" autocomplete="off">
+        <input id="inpRespuesta" type="text" placeholder="Escribe qué crees que es…" maxlength="80">
+        <button class="boton verde" type="submit">Comprobar</button>
+      </form>
+      <p id="aviso" class="aviso" role="status"></p>
+
+      <h3 class="seccion">Preguntas que puedes hacer</h3>
+      <div id="disponibles" class="lista"></div>
+      <h3 class="seccion">Preguntas hechas</h3>
+      <div id="hechas" class="lista"><p class="vacio">Todavía ninguna.</p></div>
+    </div>
+  </section>
+
+  <div id="modal" class="modal oculta" role="dialog" aria-modal="true">
+    <div class="caja">
+      <h2>Cómo se juega</h2>
+      <ol>
+        <li>Cada enigma es un dibujo. Tienes que descubrir <b>qué es</b> o <b>qué representa</b>.</li>
+        <li>Para averiguarlo tienes <b>20 preguntas</b>. Toca una y verás la respuesta:
+          <span class="chip si">Sí</span> <span class="chip no">No</span> o <span class="chip casi">Casi</span>.</li>
+        <li>Según lo que contestan, <b>aparecen preguntas nuevas</b>, cada vez más concretas.</li>
+        <li>Puedes <b>girar la imagen</b> cuando quieras: a veces lo que cuenta es mirarla desde otro lado.</li>
+        <li>Cuando creas saberlo, pulsa <b>«¡Ya lo sé!»</b> y escríbelo. Si fallas, gastas una pregunta; si vas
+          muy cerca, te avisa sin gastar nada.</li>
+        <li>Estrellas: <b>★★★</b> con 8 preguntas o menos, <b>★★</b> con 14 o menos y <b>★</b> con 20 o menos.</li>
+      </ol>
+      <button class="boton azul" id="btnCerrarModal">¡A jugar!</button>
+    </div>
+  </div>
+
+</main>
+<script src="imagenes.js"></script>
+<script src="enigmas.js"></script>
+<script src="juego.js"></script>
+</body>
+</html>
