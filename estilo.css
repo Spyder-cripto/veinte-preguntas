@@ -69,7 +69,6 @@ button,input{font:inherit;font-variant-ligatures:none}
 button.preg{cursor:pointer}
 button.preg:hover{background:#f6faff}
 button.preg:disabled{cursor:default;opacity:.5}
-.preg .nueva{font-size:12px;font-weight:600;color:#fff;background:var(--morado);border-radius:999px;padding:2px 8px;white-space:nowrap}
 .chip{font-weight:700;color:#fff;border-radius:999px;padding:2px 12px;white-space:nowrap;font-size:15px}
 .chip.si{background:var(--si)} .chip.no{background:var(--no)} .chip.casi{background:var(--casi)}
 .preg.ultima{animation:brilla 1s}

@@ -106,13 +106,15 @@ function pintarJuego() {
 
   // disponibles
   const lista = disponibles(en, st), agotadas = u >= MAX;
-  lista.sort((a, b) => (nuevas.has(b.id) - nuevas.has(a.id)));
+  // orden alfabético: así las preguntas recién desbloqueadas no se distinguen por su sitio
+  const clave = (t) => normalizar(t).trim();
+  lista.sort((a, b) => clave(a.t).localeCompare(clave(b.t), 'es'));
   const cont = $('disponibles'); cont.innerHTML = '';
   if (agotadas) cont.innerHTML = '<p class="vacio">Se acabaron las preguntas. Aún puedes intentar adivinarlo con «¡Ya lo sé!» o rendirte.</p>';
   else lista.forEach((q, k) => {
     const b = document.createElement('button'); b.className = 'preg'; b.dataset.q = q.id;
     b.style.borderLeftColor = COLORES[k % COLORES.length];
-    b.innerHTML = `<span>${q.t}</span>` + (nuevas.has(q.id) ? '<span class="nueva">Nueva</span>' : '');
+    b.innerHTML = `<span>${q.t}</span>`;
     b.onclick = () => preguntar(q.id);
     cont.appendChild(b);
   });
@@ -139,7 +141,7 @@ function preguntar(id) {
   nuevas = new Set(disponibles(en, st).map((q) => q.id).filter((x) => !antes.has(x)));
   ultima = id;
   const q = todas(en).find((x) => x.id === id);
-  avisar(q.t + ' → ' + TXT[q.a] + (nuevas.size ? '  (' + nuevas.size + (nuevas.size === 1 ? ' pregunta nueva)' : ' preguntas nuevas)') : ''));
+  avisar(q.t + ' → ' + TXT[q.a]);
   pintarJuego();
 }
 
