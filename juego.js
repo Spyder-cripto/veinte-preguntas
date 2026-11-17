@@ -2,7 +2,8 @@
 'use strict';
 const MAX = 20;
 const COLORES = ['#e8590c', '#0e9f6e', '#d6336c', '#5b86c2', '#7048e8', '#f59f00', '#1098ad', '#c2255c'];
-const CLAVE = 'veinte-preguntas-v1';
+const CLAVE = 'veinte-preguntas-v2';   // v2: banco común de preguntas (las partidas de la v1 no valen)
+const COSTE_FALLO = 2, COSTE_CASI = 1;
 const $ = (id) => document.getElementById(id);
 
 // ---------- estado guardado ----------
@@ -24,16 +25,20 @@ function comprobar(en, texto) {
   const n = normalizar(texto);
   if (n.trim() === '') return { tipo: 'vacio' };
   if (en.vale.some((c) => contiene(n, c))) return { tipo: 'bien' };
-  for (const [c, msg] of en.casi) if (contiene(n, c)) return { tipo: 'casi', msg };
+  if (en.casi.some((c) => contiene(n, c))) return { tipo: 'casi' };
   return { tipo: 'mal' };
 }
+// El banco es común: mismas preguntas y mismo desbloqueo en todos los enigmas; solo cambian las respuestas.
+const LETRA = { s: 'si', n: 'no', c: 'casi' };
+const CACHE = {};
 function todas(en) {
-  const lista = GENERALES.map(([id, t]) => ({ id, t, a: en.generales[id], p: null }));
-  for (const [id, t, a, p] of en.preguntas) lista.push({ id, t, a, p });
-  return lista;
+  if (CACHE[en.id]) return CACHE[en.id];
+  const k = ENIGMAS.indexOf(en);
+  return (CACHE[en.id] = BANCO.map(([id, t, p, r]) => ({ id, t, p, a: LETRA[r[k]] })));
 }
+// st.fallos = preguntas gastadas en respuestas escritas que no eran (2 por fallo, 1 por «casi»)
 function usadas(st) { return Math.min(MAX, st.hechas.length + st.fallos); }
-function estrellasPor(n) { return n <= 8 ? 3 : n <= 14 ? 2 : 1; }
+function estrellasPor(n) { return n <= 10 ? 3 : n <= 15 ? 2 : 1; }
 const TXT = { si: 'Sí', no: 'No', casi: 'Casi' };
 
 // ---------- portada ----------
@@ -150,14 +155,16 @@ function responder(texto) {
   if (st.fin) return;
   const r = comprobar(en, texto);
   if (r.tipo === 'vacio') { avisar('Escribe primero qué crees que es.'); return; }
-  if (r.tipo === 'casi') { avisar(r.msg + ' (no gastas pregunta)', 'casi'); return; }
   if (r.tipo === 'bien') {
     st.fin = 'bien'; st.usadas = usadas(st); st.estrellas = estrellasPor(st.usadas); guardar();
     nuevas = new Set(); pintarJuego(); window.scrollTo(0, 0); return;
   }
-  if (usadas(st) < MAX) st.fallos++;
-  guardar(); nuevas = new Set();
-  avisar('No es eso. ' + (usadas(st) < MAX ? 'Has gastado una pregunta.' : 'Puedes seguir intentándolo.'), 'mal');
+  const coste = Math.min(r.tipo === 'casi' ? COSTE_CASI : COSTE_FALLO, MAX - usadas(st));
+  st.fallos += coste; guardar(); nuevas = new Set();
+  const gasto = coste === 0 ? 'Ya no te quedan preguntas, pero puedes seguir intentándolo.'
+    : coste === 1 ? 'Has gastado una pregunta.' : 'Has gastado ' + coste + ' preguntas.';
+  if (r.tipo === 'casi') avisar('Vas cerca, pero no es exactamente eso. ' + gasto, 'casi');
+  else avisar('No es eso. ' + gasto, 'mal');
   $('inpRespuesta').select();
   pintarJuego();
 }
